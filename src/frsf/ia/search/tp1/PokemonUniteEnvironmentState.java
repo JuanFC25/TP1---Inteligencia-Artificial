@@ -30,8 +30,9 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 	private Map<Integer, List<Integer>> mapAdyacencias; // Map que tiene la lista de nodos y sus adyacencias  tic
 	private List<Integer> pokemonAgente;  // Lista que contiene posicion y energia  tic
 	private List<Integer> pokemonMaestro;  // Lista que contiene posicion y energia  tic
-	private List<List<Integer>> pokebolas;  //Lista de duplas que contiene posicion y energia de las pokebolas  tic
-	private List<List<Integer>> pokemonsAdversarios;  //Lista de que contiene posicion, energia y ciclos sin moverse de los enemigos
+	private Map<Integer, Integer> pokebolas;  //Lista de duplas que contiene posicion y energia de las pokebolas  tic
+	private Map<Integer, List<Integer>> pokemonsAdversarios;  //Lista de que contiene posicion, energia y ciclos sin moverse de los enemigos
+	
 	private Integer cantCiclosDesdeUltimoUsoSatelite;  // Cantidad de ciclos desde el ultimo uso del satelite  tic
 	private Map<String, List<Integer>> mapAtaquesEspeciales;  //Map de ataques especiales con nombre, nivel y energia  tic
 	
@@ -79,17 +80,15 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		Integer cantidadMaximaEnemigos = mapAdyacencias.size() - pokebolas.size() - 2; //preguntar cuantos enemigos generar.
 		//Integer cantidadEnemigos = getEnergia(1, cantidadMaximaEnemigos); //genero un valor random de enemigos
 		Integer cantidadEnemigos = 3;
-		
 		List<Integer> nodosVacios = obtenerNodosVacios();  //lista con nodos vacios
-		System.out.println("nodos vacios: " + nodosVacios);
-		pokemonsAdversarios = new ArrayList<>();
+		pokemonsAdversarios = new HashMap<>();
 		for (int i = 0 ; i < cantidadEnemigos; i++) {
 			Integer randomEnemigo = getEnergia(0, nodosVacios.size()-1);
 			Integer nodo = nodosVacios.get(randomEnemigo);
-			pokemonsAdversarios.add(Arrays.asList(nodo, getEnergia(10, 20), 0));
+			pokemonsAdversarios.put(nodo,Arrays.asList(getEnergia(10, 20), 0));
 			nodosVacios.remove(nodo);
 		}
-		
+		System.out.println("nodos vacios: " + nodosVacios);
 		
 		
 		//List<Integer> nodosVacios =  IntStream.rangeClosed(1, 29)
@@ -111,27 +110,30 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		
 		nodosOcupados.add(pokemonAgente.get(0));  //agrego la posicion del agente a la lista de nodos ocupados
 		nodosOcupados.add(pokemonMaestro.get(0)); //agrego la posicion del pokemon maestro a la lista de nodos ocupados
-		for (List<Integer> pokebola : pokebolas) {
-			nodosOcupados.add(pokebola.get(0));   //agrego la posicion de las pokebolas a los nodos ocupados
+		
+		
+		for (Integer pokebola : pokebolas.keySet()) {
+			nodosOcupados.add(pokebola);   //agrego la posicion de las pokebolas a los nodos ocupados
 		}
 		
 		nodosVacios.removeAll(nodosOcupados);
-		
+		System.out.println(nodosOcupados);
 		return nodosVacios;
+		
 	}
 
 
 	//funcion que genera las pokebolas
 	private void iniciarPokebolas() {
-		pokebolas = new ArrayList<>();
+		pokebolas = new HashMap<>();
 		Integer min = 10;
 		Integer max = 30;
 		
-        pokebolas.add(Arrays.asList(8, getEnergia(min, max)));
-        pokebolas.add(Arrays.asList(11, getEnergia(min, max)));
-        pokebolas.add(Arrays.asList(19, getEnergia(min, max)));
-        pokebolas.add(Arrays.asList(21, getEnergia(min, max)));
-        pokebolas.add(Arrays.asList(29, getEnergia(min, max)));	
+        pokebolas.put(8, getEnergia(min, max));
+        pokebolas.put(11, getEnergia(min, max));
+        pokebolas.put(19, getEnergia(min, max));
+        pokebolas.put(21, getEnergia(min, max));
+        pokebolas.put(29, getEnergia(min, max));	
 	}
 
 	
@@ -183,7 +185,30 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		return null;
 	}
 
+
+	public List<List<Integer>> getAdyacencias() {
+		//metodo para devolver los nodos adyacentes al pokemon agente.
+		List<Integer> listaNodosAdyacentes = mapAdyacencias.get(pokemonAgente.get(0));
+		List<List<Integer>> adyacentes = new ArrayList<>();
+		for (Integer nodo : listaNodosAdyacentes) {
+			if (pokemonsAdversarios.containsKey(nodo)) {
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.ENEMIGO_PERCEPTION,nodo,pokemonsAdversarios.get(nodo).get(1)));
+			} else if (pokebolas.containsKey(nodo)) {
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.POKEBOLA_PERCEPTION,nodo,pokebolas.get(nodo)));
+			} else if (pokemonMaestro.get(0) == nodo) {
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.POKEMON_MAESTRO_PERCEPTION,nodo,pokemonMaestro.get(1)));
+			} else {
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.EMPTY_PERCEPTION,nodo));
+			}
+		}
+		
+		return adyacentes;
+	}
+
 	
+	public PokemonUniteEnvironmentState usoSatelite() {
+		return this;
+	}
 	
 	
 }
