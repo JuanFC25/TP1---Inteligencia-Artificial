@@ -23,7 +23,10 @@ public class PokemonUniteEnvironment extends Environment{
 	@Override
 	public Perception getPercept() {
 		// TODO Auto-generated method stub
-		return null;
+		PokemonUnitePerception perception = new PokemonUnitePerception();
+		perception.setNodosAdyacentes(getAdyacencias());
+		
+		return perception;
 	}
 
 
