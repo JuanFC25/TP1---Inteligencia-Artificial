@@ -20,21 +20,14 @@ import frsf.cidisi.faia.state.EnvironmentState;
 public class PokemonUniteEnvironmentState extends EnvironmentState {
 
 	
-	 public static void main(String[] args) {
-	       
-		 new PokemonUniteEnvironmentState();
-	  
-	    }
-	
-	
-	private Map<Integer, List<Integer>> mapAdyacencias; // Map que tiene la lista de nodos y sus adyacencias  tic
-	private List<Integer> pokemonAgente;  // Lista que contiene posicion y energia  tic
-	private List<Integer> pokemonMaestro;  // Lista que contiene posicion y energia  tic
-	private Map<Integer, Integer> pokebolas;  //Lista de duplas que contiene posicion y energia de las pokebolas  tic
+	private Map<Integer, List<Integer>> mapAdyacencias; // Map que tiene la lista de nodos y sus adyacencias  
+	private List<Integer> pokemonAgente;  // Lista que contiene posicion, energia y nivel  
+	private List<Integer> pokemonMaestro;  // Lista que contiene posicion y energia  
+	private Map<Integer, Integer> pokebolas;  //Lista de duplas que contiene posicion y energia de las pokebolas  
 	private Map<Integer, List<Integer>> pokemonsAdversarios;  //Lista de que contiene posicion, energia y ciclos sin moverse de los enemigos
 	
-	private Integer cantCiclosDesdeUltimoUsoSatelite;  // Cantidad de ciclos desde el ultimo uso del satelite  tic
-	private Map<String, List<Integer>> mapAtaquesEspeciales;  //Map de ataques especiales con nombre, nivel y energia  tic
+	private Integer cantCiclosDesdeUltimoUsoSatelite;  // Cantidad de ciclos desde el ultimo uso del satelite  
+	private Map<String, List<Integer>> mapAtaquesEspeciales;  //Map de ataques especiales con nombre, nivel y energia  
 	
 	
 	
@@ -54,7 +47,7 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		
 		iniciarMap();
 		pokemonMaestro = Arrays.asList(20, 30);
-		pokemonAgente = Arrays.asList(1, 20);
+		pokemonAgente = Arrays.asList(1, 20, 1);
 		iniciarPokebolas();
 		cantCiclosDesdeUltimoUsoSatelite = 10;
 		iniciarAtaquesEspeciales();
@@ -79,7 +72,7 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 
 		Integer cantidadMaximaEnemigos = mapAdyacencias.size() - pokebolas.size() - 2; //preguntar cuantos enemigos generar.
 		//Integer cantidadEnemigos = getEnergia(1, cantidadMaximaEnemigos); //genero un valor random de enemigos
-		Integer cantidadEnemigos = 3;
+		Integer cantidadEnemigos = 5;   // despues ver esto
 		List<Integer> nodosVacios = obtenerNodosVacios();  //lista con nodos vacios
 		pokemonsAdversarios = new HashMap<>();
 		for (int i = 0 ; i < cantidadEnemigos; i++) {
@@ -205,10 +198,15 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		return adyacentes;
 	}
 
-	
+	//retorna el ambiente cuando se usa el satelite
 	public PokemonUniteEnvironmentState usoSatelite() {
 		return this;
 	}
 	
+	
+	//devuelve la energia del agente
+	public Integer getAgentEnergy() {
+		return pokemonAgente.get(1);
+	}
 	
 }

@@ -2,11 +2,15 @@ package frsf.ia.search.tp1;
 
 import java.util.List;
 
+import frsf.cidisi.faia.agent.Action;
 import frsf.cidisi.faia.agent.Perception;
 import frsf.cidisi.faia.environment.Environment;
 
+
 public class PokemonUniteEnvironment extends Environment{
 
+	
+	//CLASE LISTA
 	
 	public PokemonUniteEnvironment( ) {
 		// Create the environment state
@@ -14,6 +18,7 @@ public class PokemonUniteEnvironment extends Environment{
 	}
 	
 	
+	@Override
 	public PokemonUniteEnvironmentState getEnvironmentState() {
 		return (PokemonUniteEnvironmentState) super.getEnvironmentState();
 	}
@@ -29,11 +34,33 @@ public class PokemonUniteEnvironment extends Environment{
 		return perception;
 	}
 
+	
+	
 
 	public List<List<Integer>> getAdyacencias() {
-		// TODO Auto-generated method stub
 		return ((PokemonUniteEnvironmentState) this.environmentState).getAdyacencias();
 	}
 
 	
+	
+	@Override
+    public boolean agentFailed(Action actionReturned) {
+
+        PokemonUniteEnvironmentState pokemonEnvironmentState =
+                this.getEnvironmentState();
+
+        int agentEnergy = pokemonEnvironmentState.getAgentEnergy();
+
+        // If the agent has no energy, he failed
+        if (agentEnergy <= 0)
+            return true;
+
+        return false;
+    }
+	
+	
+	@Override
+	public String toString() {
+	    return environmentState.toString();
+	}
 }
