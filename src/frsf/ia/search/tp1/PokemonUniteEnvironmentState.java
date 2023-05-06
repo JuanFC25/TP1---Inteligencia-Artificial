@@ -28,7 +28,7 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 	
 	private Integer cantCiclosDesdeUltimoUsoSatelite;  // Cantidad de ciclos desde el ultimo uso del satelite  
 	private Map<String, List<Integer>> mapAtaquesEspeciales;  //Map de ataques especiales con nombre, nivel y energia  
-	
+	private Integer energiaInicial = 20;
 	
 	
 	
@@ -62,9 +62,9 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		
 		mapAtaquesEspeciales = new HashMap<String, List<Integer>>();
 		
-		mapAtaquesEspeciales.put("Ataque 1", Arrays.asList(2, 25));
-		mapAtaquesEspeciales.put("Ataque 2", Arrays.asList(3, 50));
-		mapAtaquesEspeciales.put("Ataque 3", Arrays.asList(4, 75));
+		mapAtaquesEspeciales.put("Ataque 1", Arrays.asList(2, 20));
+		mapAtaquesEspeciales.put("Ataque 2", Arrays.asList(3, 30));
+		mapAtaquesEspeciales.put("Ataque 3", Arrays.asList(4, 50));
 	}
 
 
@@ -208,5 +208,118 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 	public Integer getAgentEnergy() {
 		return pokemonAgente.get(1);
 	}
+
+
+	
+	
+	
+	
+	public List<Integer> getPokemonAgente() {
+		return pokemonAgente;
+	}
+
+
+	public void setPokemonAgente(List<Integer> pokemonAgente) {
+		this.pokemonAgente = pokemonAgente;
+	}
+
+
+	public Map<Integer, List<Integer>> getMapAdyacencias() {
+		return mapAdyacencias;
+	}
+
+
+	public void setMapAdyacencias(Map<Integer, List<Integer>> mapAdyacencias) {
+		this.mapAdyacencias = mapAdyacencias;
+	}
+
+
+	public List<Integer> getPokemonMaestro() {
+		return pokemonMaestro;
+	}
+
+
+	public void setPokemonMaestro(List<Integer> pokemonMaestro) {
+		this.pokemonMaestro = pokemonMaestro;
+	}
+
+
+	public Map<Integer, Integer> getPokebolas() {
+		return pokebolas;
+	}
+
+
+	public void setPokebolas(Map<Integer, Integer> pokebolas) {
+		this.pokebolas = pokebolas;
+	}
+
+
+	public Map<Integer, List<Integer>> getPokemonsAdversarios() {
+		return pokemonsAdversarios;
+	}
+
+
+	public void setPokemonsAdversarios(Map<Integer, List<Integer>> pokemonsAdversarios) {
+		this.pokemonsAdversarios = pokemonsAdversarios;
+	}
+
+
+	public Integer getCantCiclosDesdeUltimoUsoSatelite() {
+		return cantCiclosDesdeUltimoUsoSatelite;
+	}
+
+
+	public void setCantCiclosDesdeUltimoUsoSatelite(Integer cantCiclosDesdeUltimoUsoSatelite) {
+		this.cantCiclosDesdeUltimoUsoSatelite = cantCiclosDesdeUltimoUsoSatelite;
+	}
+
+
+	public Map<String, List<Integer>> getMapAtaquesEspeciales() {
+		return mapAtaquesEspeciales;
+	}
+
+
+	public void setMapAtaquesEspeciales(Map<String, List<Integer>> mapAtaquesEspeciales) {
+		this.mapAtaquesEspeciales = mapAtaquesEspeciales;
+	}
+
+
+	public void eliminarAdversario(Integer pos) {
+		pokemonsAdversarios.remove(pos);
+	}
+
+
+	public void evaluarSubirDeNivel() {
+		switch (pokemonAgente.get(2)) {
+		case 1: {
+			if(pokemonAgente.get(1) >= energiaInicial * 1.25) {
+				//ataquesDisponibles.put("Ataque 1", 0);
+				pokemonAgente.set(2, 2);
+				
+			}
+		}
+		case 2: {
+			if(pokemonAgente.get(1) >= energiaInicial * 1.75) {
+				//ataquesDisponibles.put("Ataque 2", 0);
+				pokemonAgente.set(2, 3);
+				
+			}
+		}
+		case 3: {
+			if(pokemonAgente.get(1) >= energiaInicial * 2.2) {
+				//ataquesDisponibles.put("Ataque 3", 0);
+				pokemonAgente.set(2, 4);
+				
+			}
+		}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 }
