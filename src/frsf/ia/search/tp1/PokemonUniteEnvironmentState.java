@@ -19,27 +19,20 @@ import frsf.cidisi.faia.state.EnvironmentState;
 
 public class PokemonUniteEnvironmentState extends EnvironmentState {
 
-	
 	private Map<Integer, List<Integer>> mapAdyacencias; // Map que tiene la lista de nodos y sus adyacencias  
 	private List<Integer> pokemonAgente;  // Lista que contiene posicion, energia y nivel  
 	private List<Integer> pokemonMaestro;  // Lista que contiene posicion y energia  
 	private Map<Integer, Integer> pokebolas;  //Lista de duplas que contiene posicion y energia de las pokebolas  
 	private Map<Integer, List<Integer>> pokemonsAdversarios;  //Lista de que contiene posicion, energia y ciclos sin moverse de los enemigos
-	
+	private Map<Integer, Integer> percepcionesAmbiente; //Map con el nodo y la percepcion
 	private Integer cantCiclosDesdeUltimoUsoSatelite;  // Cantidad de ciclos desde el ultimo uso del satelite  
 	private Map<String, List<Integer>> mapAtaquesEspeciales;  //Map de ataques especiales con nombre, nivel y energia  
 	private Integer energiaInicial = 20;
-	
-	
-	
-	
-	
 	
 	public PokemonUniteEnvironmentState() {
 		super();
 		initState();
 	}
-
 
 	@Override
 	public void initState() {
@@ -47,17 +40,43 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		
 		iniciarMap();
 		pokemonMaestro = Arrays.asList(20, 30);
+		percepcionesAmbiente.put(20, PokemonUnitePerception.POKEMON_MAESTRO_PERCEPTION);
+		
 		pokemonAgente = Arrays.asList(1, 20, 1);
+		percepcionesAmbiente.put(1, PokemonUnitePerception.EMPTY_PERCEPTION);
+		
 		iniciarPokebolas();
 		cantCiclosDesdeUltimoUsoSatelite = 10;
 		iniciarAtaquesEspeciales();
 		iniciarAdversarios();
+		iniciarNodosVacios();
 		/* Sets some nodes with foods and enemies. */
 		System.out.println(pokemonsAdversarios);
 
 	}
 	
 	
+	public Map<Integer, Integer> getPercepcionesAmbiente() {
+		return percepcionesAmbiente;
+	}
+
+	public void setPercepcionesAmbiente(Map<Integer, Integer> percepcionesAmbiente) {
+		this.percepcionesAmbiente = percepcionesAmbiente;
+	}
+
+	public Integer getEnergiaInicial() {
+		return energiaInicial;
+	}
+
+	public void setEnergiaInicial(Integer energiaInicial) {
+		this.energiaInicial = energiaInicial;
+	}
+
+	private void iniciarNodosVacios() {
+		List<Integer> nodosVacios = obtenerNodosVacios();
+		nodosVacios.forEach(n -> percepcionesAmbiente.put(n, PokemonUnitePerception.EMPTY_PERCEPTION));
+	}
+
 	private void iniciarAtaquesEspeciales() {
 		
 		mapAtaquesEspeciales = new HashMap<String, List<Integer>>();
@@ -76,22 +95,14 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		List<Integer> nodosVacios = obtenerNodosVacios();  //lista con nodos vacios
 		pokemonsAdversarios = new HashMap<>();
 		for (int i = 0 ; i < cantidadEnemigos; i++) {
-			Integer randomEnemigo = getEnergia(0, nodosVacios.size()-1);
+			Integer randomEnemigo = getRandom(0, nodosVacios.size()-1);
 			Integer nodo = nodosVacios.get(randomEnemigo);
-			pokemonsAdversarios.put(nodo,Arrays.asList(getEnergia(10, 20), 0));
+			
+			percepcionesAmbiente.put(nodo, PokemonUnitePerception.ENEMIGO_PERCEPTION);
+			pokemonsAdversarios.put(nodo,Arrays.asList(getRandom(10, 20), 0));
 			nodosVacios.remove(nodo);
 		}
-		System.out.println("nodos vacios: " + nodosVacios);
-		
-		
-		//List<Integer> nodosVacios =  IntStream.rangeClosed(1, 29)
-		//	    .boxed().collect(Collectors.toList());
-		
-		//nodosVacios = nodosVacios.stream().filter(i-> i!= pokemonAgente.get(0)).collect(Collectors.toList());
-		
-	
-		
-		
+		System.out.println("nodos vacios: " + nodosVacios);		
 	}
 
 
@@ -103,7 +114,6 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		
 		nodosOcupados.add(pokemonAgente.get(0));  //agrego la posicion del agente a la lista de nodos ocupados
 		nodosOcupados.add(pokemonMaestro.get(0)); //agrego la posicion del pokemon maestro a la lista de nodos ocupados
-		
 		
 		for (Integer pokebola : pokebolas.keySet()) {
 			nodosOcupados.add(pokebola);   //agrego la posicion de las pokebolas a los nodos ocupados
@@ -121,17 +131,17 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		pokebolas = new HashMap<>();
 		Integer min = 10;
 		Integer max = 30;
-		
-        pokebolas.put(8, getEnergia(min, max));
-        pokebolas.put(11, getEnergia(min, max));
-        pokebolas.put(19, getEnergia(min, max));
-        pokebolas.put(21, getEnergia(min, max));
-        pokebolas.put(29, getEnergia(min, max));	
+		List<Integer> nodos = List.of(8,11,19,21,29);
+		nodos.forEach(n -> {
+			pokebolas.put(n, getRandom(min, max));
+			percepcionesAmbiente.put(n, PokemonUnitePerception.POKEBOLA_PERCEPTION);
+		});
+        
 	}
 
 	
 	//funcion que genera un numero aleatorio en un rango
-	private Integer getEnergia(Integer min, Integer max) {
+	private Integer getRandom(Integer min, Integer max) {
 		Random aleatorio = new Random();
 		return min+aleatorio.nextInt( (max+1) - min);
 	}
@@ -185,22 +195,26 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		List<List<Integer>> adyacentes = new ArrayList<>();
 		for (Integer nodo : listaNodosAdyacentes) {
 			if (pokemonsAdversarios.containsKey(nodo)) {
-				adyacentes.add(Arrays.asList(PokemonUnitePerception.ENEMIGO_PERCEPTION,nodo,pokemonsAdversarios.get(nodo).get(1)));
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.ENEMIGO_PERCEPTION, nodo, pokemonsAdversarios.get(nodo).get(0)));
 			} else if (pokebolas.containsKey(nodo)) {
-				adyacentes.add(Arrays.asList(PokemonUnitePerception.POKEBOLA_PERCEPTION,nodo,pokebolas.get(nodo)));
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.POKEBOLA_PERCEPTION, nodo, pokebolas.get(nodo)));
 			} else if (pokemonMaestro.get(0) == nodo) {
-				adyacentes.add(Arrays.asList(PokemonUnitePerception.POKEMON_MAESTRO_PERCEPTION,nodo,pokemonMaestro.get(1)));
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.POKEMON_MAESTRO_PERCEPTION, nodo, pokemonMaestro.get(1)));
 			} else {
-				adyacentes.add(Arrays.asList(PokemonUnitePerception.EMPTY_PERCEPTION,nodo));
+				adyacentes.add(Arrays.asList(PokemonUnitePerception.EMPTY_PERCEPTION, nodo));
 			}
 		}
 		
 		return adyacentes;
 	}
 
-	//retorna el ambiente cuando se usa el satelite
+	//retorna el ambiente cuando se usa el satelite 
 	public PokemonUniteEnvironmentState usoSatelite() {
-		return this;
+		if(cantCiclosDesdeUltimoUsoSatelite >= 5 && cantCiclosDesdeUltimoUsoSatelite <= 10) {
+			cantCiclosDesdeUltimoUsoSatelite = 0;
+			return this;
+		}
+		return null;
 	}
 	
 	
@@ -209,11 +223,6 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		return pokemonAgente.get(1);
 	}
 
-
-	
-	
-	
-	
 	public List<Integer> getPokemonAgente() {
 		return pokemonAgente;
 	}
@@ -227,7 +236,6 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 	public Map<Integer, List<Integer>> getMapAdyacencias() {
 		return mapAdyacencias;
 	}
-
 
 	public void setMapAdyacencias(Map<Integer, List<Integer>> mapAdyacencias) {
 		this.mapAdyacencias = mapAdyacencias;
@@ -321,9 +329,17 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		
 	}
 	
-	public void actualizarCicloSatelite(Boolean state) {
-		if(state) cantCiclosDesdeUltimoUsoSatelite++;
+	public void actualizarCicloSatelite(Boolean incrementar) {
+		if(incrementar) {
+			if(cantCiclosDesdeUltimoUsoSatelite<10) {
+				cantCiclosDesdeUltimoUsoSatelite++;
+			}
+		}
 		else cantCiclosDesdeUltimoUsoSatelite = 0;
+	}
+
+	public void actualizarNodoPercepcion(Integer nodo, int perception) {
+		this.percepcionesAmbiente.replace(nodo, perception);
 	}
 	
 	

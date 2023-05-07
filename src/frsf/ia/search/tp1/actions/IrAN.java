@@ -13,10 +13,6 @@ public class IrAN extends SearchAction {
 
 	private Integer nodo; 
 	
-	
-	//HACER
-	// PREGUNTAR, es mucho mas facil si la hacemos separada
-	
 	public IrAN(Integer nodo) {
 		super();
 		this.nodo = nodo;
@@ -27,13 +23,11 @@ public class IrAN extends SearchAction {
 		
 		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) s;
 		
-		
 		List<Integer> nodosAdyacentes = pokemonState.getAmbienteAgente().get(pokemonState.getNodoPosicion());
 		
-		
 		if(nodosAdyacentes.contains(nodo)) {
-			//hacer logica
 			pokemonState.setNodoPosicion(nodo);
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			return pokemonState;
 		}
 		return null;
@@ -49,17 +43,17 @@ public class IrAN extends SearchAction {
 	public EnvironmentState execute(AgentState ast, EnvironmentState est) {
 		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) ast;
 		PokemonUniteEnvironmentState pokemonEnvironmentState = (PokemonUniteEnvironmentState) est;
-		
 
 		//pos, energia, nivel
 		List<Integer> pokemonAgente = pokemonEnvironmentState.getPokemonAgente();
+		//posicion de los nodos adyacentes
 		List<Integer> nodosAdyacentes = pokemonEnvironmentState.getAdyacencias().get(pokemonAgente.get(0));
 		
 		if(nodosAdyacentes.contains(nodo)) {
-			//hacer logica
 			pokemonState.setNodoPosicion(nodo);
 			pokemonEnvironmentState.setPokemonAgente(List.of(nodo, pokemonAgente.get(1), pokemonAgente.get(2)));
 			pokemonEnvironmentState.actualizarCicloSatelite(true);
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			return pokemonEnvironmentState;
 		}
 		return null;
@@ -67,8 +61,7 @@ public class IrAN extends SearchAction {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Ir a N"+nodo;
 	}
 	
 

@@ -10,7 +10,6 @@ import frsf.cidisi.faia.environment.Environment;
 
 public class PokemonUnitePerception extends Perception {
 
-	
 	public static int UNKNOWN_PERCEPTION = -1;
     public static int EMPTY_PERCEPTION = 0;
     public static int ENEMIGO_PERCEPTION = 1;
@@ -22,17 +21,11 @@ public class PokemonUnitePerception extends Perception {
     private Map<Integer, List<Integer>> mapAdyacencias;
     private Integer energy;  //preguntar
 	
-    public PokemonUnitePerception() {
-		
-	}
+    public PokemonUnitePerception() {}
 	
 	public PokemonUnitePerception(Agent agent, Environment environment) {
         super(agent, environment);
 	}
-	
-	
-	
-	
 	
 	@Override
 	public void initPerception(Agent agent, Environment environment) {
@@ -42,6 +35,7 @@ public class PokemonUnitePerception extends Perception {
 		PokemonUniteEnvironmentState pokemonEnvironmentState = pokemonEnvironment.getEnvironmentState();
 		
 		this.setNodosAdyacentes(pokemonEnvironment.getAdyacencias());
+		//VER QUE PONER ACA
 		this.setMapAdyacencias(new HashMap<Integer, List<Integer>>());
 		
 	}
@@ -63,8 +57,4 @@ public class PokemonUnitePerception extends Perception {
 		this.mapAdyacencias = mapAdyacencias;
 	}
 
-	
-	
-	
-	
 }

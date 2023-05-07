@@ -8,10 +8,9 @@ import frsf.cidisi.faia.state.AgentState;
 import frsf.cidisi.faia.state.EnvironmentState;
 import frsf.ia.search.tp1.PokemonUniteAgentState;
 import frsf.ia.search.tp1.PokemonUniteEnvironmentState;
+import frsf.ia.search.tp1.PokemonUnitePerception;
 
 public class Pelear extends SearchAction {
-
-	//CREO QUE ESTA
 	
 	@Override
 	public SearchBasedAgentState execute(SearchBasedAgentState s) {
@@ -28,6 +27,7 @@ public class Pelear extends SearchAction {
 			pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
 			pokemonState.setEnergia(energia);
 			pokemonState.evaluarSubirDeNivel();
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			
 			return pokemonState;
 		}
@@ -40,7 +40,7 @@ public class Pelear extends SearchAction {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
 	public EnvironmentState execute(AgentState ast, EnvironmentState est) {
 		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) ast;
@@ -59,10 +59,12 @@ public class Pelear extends SearchAction {
 			pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
 			pokemonState.setEnergia(energia);
 			pokemonState.evaluarSubirDeNivel();
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			pokemonEnvironmentState.eliminarAdversario(pokemonAgente.get(0));
 			pokemonEnvironmentState.setPokemonAgente(List.of(pokemonAgente.get(0),energia,pokemonAgente.get(2)));
 			pokemonEnvironmentState.evaluarSubirDeNivel();
 			pokemonEnvironmentState.actualizarCicloSatelite(true);
+			pokemonEnvironmentState.actualizarNodoPercepcion(pokemonAgente.get(0), PokemonUnitePerception.EMPTY_PERCEPTION);
 			
 			return pokemonEnvironmentState;
 		}
@@ -72,8 +74,7 @@ public class Pelear extends SearchAction {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Pelear";
 	}
 
 }

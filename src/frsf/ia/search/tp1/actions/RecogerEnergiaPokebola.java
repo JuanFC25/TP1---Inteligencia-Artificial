@@ -8,6 +8,7 @@ import frsf.cidisi.faia.state.AgentState;
 import frsf.cidisi.faia.state.EnvironmentState;
 import frsf.ia.search.tp1.PokemonUniteAgentState;
 import frsf.ia.search.tp1.PokemonUniteEnvironmentState;
+import frsf.ia.search.tp1.PokemonUnitePerception;
 
 public class RecogerEnergiaPokebola extends SearchAction {
 
@@ -21,13 +22,13 @@ public class RecogerEnergiaPokebola extends SearchAction {
 		Integer nodoActual = pokemonState.getNodoPosicion();
 		Integer energiaPokebola = pokemonState.getPokebolas().get(nodoActual);
 		
-		
 		//este if sirve para saber si hay una pokebola en el nodo actual, si es null no hay pokebola
 		if (energiaPokebola != null) {
 			Integer energiaTotal = pokemonState.getEnergia()+energiaPokebola;
 			pokemonState.setEnergia(energiaTotal);
 			pokemonState.eliminarPokebola(nodoActual);
 			pokemonState.evaluarSubirDeNivel();
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			
 			return pokemonState;
 		}
@@ -58,10 +59,13 @@ public class RecogerEnergiaPokebola extends SearchAction {
 			pokemonState.setEnergia(energiaTotal);
 			pokemonState.eliminarPokebola(pokemonAgente.get(0));
 			pokemonState.evaluarSubirDeNivel();
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			pokemonEnvironmentState.setPokemonAgente(List.of(pokemonAgente.get(0),energiaTotal,pokemonAgente.get(2)));
 			pokemonEnvironmentState.eliminarPokebola(pokemonAgente.get(0));
 			pokemonEnvironmentState.evaluarSubirDeNivel();
 			pokemonEnvironmentState.actualizarCicloSatelite(true);
+			pokemonEnvironmentState.actualizarNodoPercepcion(pokemonAgente.get(0), PokemonUnitePerception.EMPTY_PERCEPTION);
+			
 			return pokemonEnvironmentState;
 		}
 		
@@ -70,8 +74,7 @@ public class RecogerEnergiaPokebola extends SearchAction {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Recoger energia pokebola";
 	}
 
 }

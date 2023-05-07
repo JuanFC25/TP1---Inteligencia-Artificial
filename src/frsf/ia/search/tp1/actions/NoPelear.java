@@ -8,10 +8,9 @@ import frsf.cidisi.faia.state.AgentState;
 import frsf.cidisi.faia.state.EnvironmentState;
 import frsf.ia.search.tp1.PokemonUniteAgentState;
 import frsf.ia.search.tp1.PokemonUniteEnvironmentState;
+import frsf.ia.search.tp1.PokemonUnitePerception;
 
-public class NoPelear extends SearchAction {
-
-	
+public class NoPelear extends SearchAction {	
 	//CREO QUE ESTA
 	
 	@Override
@@ -20,11 +19,12 @@ public class NoPelear extends SearchAction {
 		Integer nodoActual = pokemonState.getNodoPosicion();
 		List<Integer> pokemonAdversario = pokemonState.getPokemonsAdversarios().get(nodoActual);
 		Integer energia = pokemonState.getEnergia();
+		
 		//sirve para saber si hay un enemigo en el nodo actual, si es null no hay enemigo
 		if(energia != null && energia < pokemonAdversario.get(0)) {
-			//ver cuanto sacar
 			energia -= (int) ( energia - (pokemonAdversario.get(0) * 0.25)); 
 			pokemonState.setEnergia(energia);
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			
 			return pokemonState;
 		}
@@ -52,8 +52,11 @@ public class NoPelear extends SearchAction {
 		if(energia < pokemonAdversario.get(0)) {
 			energia -= (int) ( energia - (pokemonAdversario.get(0) * 0.25)); 
 			pokemonState.setEnergia(energia);
+			pokemonState.incrementarContadoresAtaquesDisponibles();
 			pokemonEnvironmentState.setPokemonAgente(List.of(pokemonAgente.get(0),energia,pokemonAgente.get(2)));
 			pokemonEnvironmentState.actualizarCicloSatelite(true);
+			
+			
 			return pokemonEnvironmentState;
 		}
 		
@@ -62,8 +65,7 @@ public class NoPelear extends SearchAction {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "No pelear";
 	}
 
 }
