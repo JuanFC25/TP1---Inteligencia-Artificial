@@ -1,15 +1,37 @@
 package frsf.ia.search.tp1.actions;
 
+import java.util.List;
+
 import frsf.cidisi.faia.agent.search.SearchAction;
 import frsf.cidisi.faia.agent.search.SearchBasedAgentState;
 import frsf.cidisi.faia.state.AgentState;
 import frsf.cidisi.faia.state.EnvironmentState;
+import frsf.ia.search.tp1.PokemonUniteAgentState;
+import frsf.ia.search.tp1.PokemonUniteEnvironmentState;
 
 public class RecogerEnergiaPokebola extends SearchAction {
 
+	
+	//CREO QUE ESTA
+	
 	@Override
 	public SearchBasedAgentState execute(SearchBasedAgentState s) {
-		// TODO Auto-generated method stub
+		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) s;
+		
+		Integer nodoActual = pokemonState.getNodoPosicion();
+		Integer energiaPokebola = pokemonState.getPokebolas().get(nodoActual);
+		
+		
+		//este if sirve para saber si hay una pokebola en el nodo actual, si es null no hay pokebola
+		if (energiaPokebola != null) {
+			Integer energiaTotal = pokemonState.getEnergia()+energiaPokebola;
+			pokemonState.setEnergia(energiaTotal);
+			pokemonState.eliminarPokebola(nodoActual);
+			pokemonState.evaluarSubirDeNivel();
+			
+			return pokemonState;
+		}
+		
 		return null;
 	}
 
@@ -21,7 +43,28 @@ public class RecogerEnergiaPokebola extends SearchAction {
 
 	@Override
 	public EnvironmentState execute(AgentState ast, EnvironmentState est) {
-		// TODO Auto-generated method stub
+		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) ast;
+		PokemonUniteEnvironmentState pokemonEnvironmentState = (PokemonUniteEnvironmentState) est;
+		
+		//pos, energia, nivel
+		List<Integer> pokemonAgente = pokemonEnvironmentState.getPokemonAgente();
+		
+		Integer energiaPokebola = pokemonEnvironmentState.getPokebolas().get(pokemonAgente.get(0));
+		
+		
+		//este if sirve para saber si hay una pokebola en el nodo actual, si es null no hay pokebola
+		if (energiaPokebola != null) {
+			Integer energiaTotal = pokemonState.getEnergia()+energiaPokebola;
+			pokemonState.setEnergia(energiaTotal);
+			pokemonState.eliminarPokebola(pokemonAgente.get(0));
+			pokemonState.evaluarSubirDeNivel();
+			pokemonEnvironmentState.setPokemonAgente(List.of(pokemonAgente.get(0),energiaTotal,pokemonAgente.get(2)));
+			pokemonEnvironmentState.eliminarPokebola(pokemonAgente.get(0));
+			pokemonEnvironmentState.evaluarSubirDeNivel();
+			pokemonEnvironmentState.actualizarCicloSatelite(true);
+			return pokemonEnvironmentState;
+		}
+		
 		return null;
 	}
 

@@ -314,8 +314,17 @@ public class PokemonUniteEnvironmentState extends EnvironmentState {
 		}
 		}
 	}
+
+
+	public void eliminarPokebola(Integer pos) {
+		pokebolas.remove(pos);
+		
+	}
 	
-	
+	public void actualizarCicloSatelite(Boolean state) {
+		if(state) cantCiclosDesdeUltimoUsoSatelite++;
+		else cantCiclosDesdeUltimoUsoSatelite = 0;
+	}
 	
 	
 	

@@ -8,19 +8,25 @@ import java.util.Map;
 import frsf.cidisi.faia.agent.Perception;
 import frsf.cidisi.faia.agent.search.SearchBasedAgentState;
 
+/**
+ * @author juank
+ *
+ */
 public class PokemonUniteAgentState extends SearchBasedAgentState{
 
 	
 	private Map<Integer, List<Integer>> ambienteAgente; // Map que tiene la lista de nodos y sus adyacencias 
 	private Map<Integer, List<Integer>> pokemonsAdversarios;//Lista de que contiene posicion, energia y ciclos sin moverse de los enemigos
+	private Map<Integer, Integer> pokebolas;  //Map que contiene posicion y energia de las pokebolas  
 	private Integer nodoPosicion;
 	private Integer energia;
 	private Integer nivel;
 	private Integer cantidadAdversarios;
-	private Map<String, Integer> ataquesDisponibles;
+	private Map<String, Integer> ataquesDisponibles; // nombre y ciclos desde ultimo uso
 	private List<Integer> pokemonMaestro;  // Lista que contiene posicion y energia  
 	private Integer energiaInicial = 20;
 	
+	//Map de ataques especiales con nombre, nivel y energia  
 	private Map<String, List<Integer>> mapAtaquesEspeciales;
 	
 	
@@ -226,6 +232,39 @@ public class PokemonUniteAgentState extends SearchBasedAgentState{
 		}
 		}
 	}
+
+
+	public Map<Integer, Integer> getPokebolas() {
+		return pokebolas;
+	}
+
+
+	public void setPokebolas(Map<Integer, Integer> pokebolas) {
+		this.pokebolas = pokebolas;
+	}
+
+
+	public void eliminarPokebola(Integer nodoActual) {
+		pokebolas.remove(nodoActual);
+		
+	}
+	
+	public void actualizarContadorAtaquesDisponibles(String key, Integer value) {
+		ataquesDisponibles.replace(key, value);
+	}
+
+
+	public Map<String, List<Integer>> getMapAtaquesEspeciales() {
+		return mapAtaquesEspeciales;
+	}
+
+
+	public void setMapAtaquesEspeciales(Map<String, List<Integer>> mapAtaquesEspeciales) {
+		this.mapAtaquesEspeciales = mapAtaquesEspeciales;
+	}
+
+
+	
 
 	
 	

@@ -1,15 +1,46 @@
 package frsf.ia.search.tp1.actions;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import frsf.cidisi.faia.agent.search.SearchAction;
 import frsf.cidisi.faia.agent.search.SearchBasedAgentState;
 import frsf.cidisi.faia.state.AgentState;
 import frsf.cidisi.faia.state.EnvironmentState;
+import frsf.ia.search.tp1.PokemonUniteAgentState;
+import frsf.ia.search.tp1.PokemonUniteEnvironmentState;
 
 public class PelearConAtaqueEspecial extends SearchAction {
 
 	@Override
 	public SearchBasedAgentState execute(SearchBasedAgentState s) {
-		// TODO Auto-generated method stub
+		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) s;
+		
+		Integer nodoActual = pokemonState.getNodoPosicion();
+		List<Integer> pokemonAdversario = pokemonState.getPokemonsAdversarios().get(nodoActual);
+		Integer energia = pokemonState.getEnergia();
+		Map<String, Integer> ataquesDisponibles = pokemonState.getataquesDisponibles();
+		Integer energiaTemporal;
+		
+		if(energia != null && energia < pokemonAdversario.get(0) && ataquesDisponibles.size() > 0) {
+			for (int i = 0 ; i<ataquesDisponibles.size() ; i++) {
+				if(ataquesDisponibles.get("Ataque " + (i+1)) >= 3){
+					
+					energiaTemporal =(int) energia + energia * (pokemonState.getMapAtaquesEspeciales().get("Ataque " + (i+1)).get(1))/100;
+						if(energiaTemporal > pokemonAdversario.get(0)) {
+							pokemonState.eliminarAdversario(nodoActual);
+							pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
+							energia = (int)(energiaTemporal + pokemonAdversario.get(0) * 0.2 - pokemonAdversario.get(0));
+							pokemonState.setEnergia(energia);
+							pokemonState.evaluarSubirDeNivel();
+							pokemonState.actualizarContadorAtaquesDisponibles("Ataque " + (i+1), 0);
+							
+							return pokemonState;
+						}
+				}
+			}
+		}
 		return null;
 	}
 
@@ -21,7 +52,41 @@ public class PelearConAtaqueEspecial extends SearchAction {
 
 	@Override
 	public EnvironmentState execute(AgentState ast, EnvironmentState est) {
-		// TODO Auto-generated method stub
+		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) ast;
+		PokemonUniteEnvironmentState pokemonEnvironmentState = (PokemonUniteEnvironmentState) est;
+		
+		//pos, energia, nivel
+		List<Integer> pokemonAgente = pokemonEnvironmentState.getPokemonAgente();
+		//Lista de que contiene energia y ciclos sin moverse de los enemigos
+		List<Integer> pokemonAdversario = pokemonEnvironmentState.getPokemonsAdversarios().get(pokemonAgente.get(0));
+		Map<String, Integer> ataquesDisponibles = pokemonState.getataquesDisponibles();
+		Integer energiaTemporal;
+		
+		
+		
+		if(pokemonAgente.get(1) != null && pokemonAgente.get(1) < pokemonAdversario.get(0) && ataquesDisponibles.size() > 0) {
+			for (int i = 0 ; i<ataquesDisponibles.size() ; i++) {
+				if(ataquesDisponibles.get("Ataque " + (i+1)) >= 3){
+					
+					energiaTemporal =(int) pokemonAgente.get(1) + pokemonAgente.get(1) * (pokemonState.getMapAtaquesEspeciales().get("Ataque " + (i+1)).get(1))/100;
+						if(energiaTemporal > pokemonAdversario.get(0)) {
+							pokemonState.eliminarAdversario(pokemonAgente.get(0));
+							pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
+							Integer energia = (int)(energiaTemporal + pokemonAdversario.get(0) * 0.2 - pokemonAdversario.get(0));
+							pokemonState.setEnergia(energia);
+							pokemonState.actualizarContadorAtaquesDisponibles(("Ataque " + (i+1)), 0);
+							pokemonState.evaluarSubirDeNivel();
+
+							pokemonEnvironmentState.eliminarAdversario(pokemonAgente.get(0));
+							pokemonEnvironmentState.setPokemonAgente(List.of(pokemonAgente.get(0),energia,pokemonAgente.get(2)));
+							
+							pokemonEnvironmentState.actualizarCicloSatelite(true);
+							return pokemonEnvironmentState;
+						}
+				}
+			}
+			
+		}
 		return null;
 	}
 

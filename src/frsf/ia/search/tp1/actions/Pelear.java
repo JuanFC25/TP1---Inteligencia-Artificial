@@ -11,6 +11,8 @@ import frsf.ia.search.tp1.PokemonUniteEnvironmentState;
 
 public class Pelear extends SearchAction {
 
+	//CREO QUE ESTA
+	
 	@Override
 	public SearchBasedAgentState execute(SearchBasedAgentState s) {
 		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) s;
@@ -19,7 +21,8 @@ public class Pelear extends SearchAction {
 		List<Integer> pokemonAdversario = pokemonState.getPokemonsAdversarios().get(nodoActual);
 		Integer energia = pokemonState.getEnergia();
 		
-		if(energia > pokemonAdversario.get(0)) {
+		//sirve para saber si hay un enemigo en el nodo actual, si es null no hay enemigo
+		if(energia != null && energia > pokemonAdversario.get(0)) {
 			energia += (int) ((pokemonAdversario.get(0) * 0.2) - pokemonAdversario.get(0));
 			pokemonState.eliminarAdversario(nodoActual);
 			pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
@@ -52,13 +55,16 @@ public class Pelear extends SearchAction {
 		
 		if(energia > pokemonAdversario.get(0)) {
 			energia += (int) ((pokemonAdversario.get(0) * 0.2) - pokemonAdversario.get(0));
-			pokemonEnvironmentState.eliminarAdversario(pokemonAgente.get(0));
+			pokemonState.eliminarAdversario(pokemonAgente.get(0));
 			pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
 			pokemonState.setEnergia(energia);
-			pokemonEnvironmentState.setEnergia(energia);
+			pokemonState.evaluarSubirDeNivel();
+			pokemonEnvironmentState.eliminarAdversario(pokemonAgente.get(0));
+			pokemonEnvironmentState.setPokemonAgente(List.of(pokemonAgente.get(0),energia,pokemonAgente.get(2)));
 			pokemonEnvironmentState.evaluarSubirDeNivel();
+			pokemonEnvironmentState.actualizarCicloSatelite(true);
 			
-			return pokemonState;
+			return pokemonEnvironmentState;
 		}
 		
 		return null;

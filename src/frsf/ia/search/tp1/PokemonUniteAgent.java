@@ -34,12 +34,40 @@ public class PokemonUniteAgent extends SearchBasedAgent {
 		
 		//operadores
 		Vector<SearchAction> operators = new Vector<SearchAction>();
-		operators.addElement(new IrAN(null));
 		operators.addElement(new Pelear());
 		operators.addElement(new NoPelear());
 		operators.addElement(new PelearConAtaqueEspecial());
 		operators.addElement(new RecogerEnergiaPokebola());
-		
+		operators.addElement(new IrAN(1));
+		operators.addElement(new IrAN(2));
+		operators.addElement(new IrAN(3));
+		operators.addElement(new IrAN(4));
+		operators.addElement(new IrAN(5));
+		operators.addElement(new IrAN(6));
+		operators.addElement(new IrAN(7));
+		operators.addElement(new IrAN(8));
+		operators.addElement(new IrAN(9));
+		operators.addElement(new IrAN(10));
+		operators.addElement(new IrAN(11));
+		operators.addElement(new IrAN(12));
+		operators.addElement(new IrAN(13));
+		operators.addElement(new IrAN(14));
+		operators.addElement(new IrAN(15));
+		operators.addElement(new IrAN(16));
+		operators.addElement(new IrAN(17));
+		operators.addElement(new IrAN(18));
+		operators.addElement(new IrAN(19));
+		operators.addElement(new IrAN(20));
+		operators.addElement(new IrAN(21));
+		operators.addElement(new IrAN(22));
+		operators.addElement(new IrAN(23));
+		operators.addElement(new IrAN(24));
+		operators.addElement(new IrAN(25));
+		operators.addElement(new IrAN(26));
+		operators.addElement(new IrAN(27));
+		operators.addElement(new IrAN(28));
+		operators.addElement(new IrAN(29));
+
 		Problem problem = new Problem(goal, pokemonState, operators);
         this.setProblem(problem);
 	}
