@@ -21,12 +21,14 @@ public class NoPelear extends SearchAction {
 		Integer energia = pokemonState.getEnergia();
 		
 		//sirve para saber si hay un enemigo en el nodo actual, si es null no hay enemigo
-		if(energia != null && energia < pokemonAdversario.get(0)) {
-			energia -= (int) ( energia - (pokemonAdversario.get(0) * 0.25)); 
-			pokemonState.setEnergia(energia);
-			pokemonState.incrementarContadoresAtaquesDisponibles();
-			
-			return pokemonState;
+		if(pokemonAdversario != null && energia != null) {
+			if(energia < pokemonAdversario.get(0)) {
+				energia -= (int) ( energia - (pokemonAdversario.get(0) * 0.25)); 
+				pokemonState.setEnergia(energia);
+				pokemonState.incrementarContadoresAtaquesDisponibles();
+				
+				return pokemonState;
+			}
 		}
 		return null;
 	}
@@ -34,7 +36,7 @@ public class NoPelear extends SearchAction {
 	@Override
 	public Double getCost() {
 		// TODO Auto-generated method stub
-		return null;
+		return 1.0;
 	}
 
 	@Override

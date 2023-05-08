@@ -7,8 +7,7 @@ public class PokemonUniteGoal extends GoalTest{
 
 	@Override
 	public boolean isGoalState(AgentState agentState) {
-        if (((PokemonUniteAgentState) agentState).isInMasterPokemonPosition() &&
-                !((PokemonUniteAgentState) agentState).isMasterPokemonAlive()) {
+        if (((PokemonUniteAgentState) agentState).isInMasterPokemonPosition() ) {
             return true;
         }
         return false;

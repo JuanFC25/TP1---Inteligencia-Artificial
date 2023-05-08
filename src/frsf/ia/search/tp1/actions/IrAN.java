@@ -23,11 +23,20 @@ public class IrAN extends SearchAction {
 		
 		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) s;
 		
+		
+		
 		List<Integer> nodosAdyacentes = pokemonState.getAmbienteAgente().get(pokemonState.getNodoPosicion());
 		
-		if(nodosAdyacentes.contains(nodo)) {
-			pokemonState.setNodoPosicion(nodo);
+		System.out.println("NODO POSICION AGENTE:" + pokemonState.getNodoPosicion());
+		System.out.println("NODOS ADYACENTES: " + nodosAdyacentes);
+	
+		if(nodosAdyacentes!= null && nodosAdyacentes.contains(nodo)) {
+			System.out.println("ESTOY ACA");
+			pokemonState.setNodoPosicion(this.nodo);
+			pokemonState.getAmbienteAgente();
 			pokemonState.incrementarContadoresAtaquesDisponibles();
+			System.out.println(pokemonState.toString());
+			
 			return pokemonState;
 		}
 		return null;
@@ -36,24 +45,27 @@ public class IrAN extends SearchAction {
 	@Override
 	public Double getCost() {
 		// TODO Auto-generated method stub
-		return null;
+		return 1.0;
 	}
 
 	@Override
 	public EnvironmentState execute(AgentState ast, EnvironmentState est) {
 		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) ast;
 		PokemonUniteEnvironmentState pokemonEnvironmentState = (PokemonUniteEnvironmentState) est;
-
+		
 		//pos, energia, nivel
 		List<Integer> pokemonAgente = pokemonEnvironmentState.getPokemonAgente();
 		//posicion de los nodos adyacentes
 		List<Integer> nodosAdyacentes = pokemonEnvironmentState.getAdyacencias().get(pokemonAgente.get(0));
-		
+		System.out.println("ENVIRONMENT STATE:  " + pokemonEnvironmentState.toString()  + "\n" + "AGENTE STATE:  " + pokemonState.toString());
 		if(nodosAdyacentes.contains(nodo)) {
 			pokemonState.setNodoPosicion(nodo);
 			pokemonEnvironmentState.setPokemonAgente(List.of(nodo, pokemonAgente.get(1), pokemonAgente.get(2)));
 			pokemonEnvironmentState.actualizarCicloSatelite(true);
 			pokemonState.incrementarContadoresAtaquesDisponibles();
+			
+			
+			
 			return pokemonEnvironmentState;
 		}
 		return null;

@@ -21,24 +21,25 @@ public class Pelear extends SearchAction {
 		Integer energia = pokemonState.getEnergia();
 		
 		//sirve para saber si hay un enemigo en el nodo actual, si es null no hay enemigo
-		if(energia != null && energia > pokemonAdversario.get(0)) {
-			energia += (int) ((pokemonAdversario.get(0) * 0.2) - pokemonAdversario.get(0));
-			pokemonState.eliminarAdversario(nodoActual);
-			pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
-			pokemonState.setEnergia(energia);
-			pokemonState.evaluarSubirDeNivel();
-			pokemonState.incrementarContadoresAtaquesDisponibles();
-			
-			return pokemonState;
+		if(pokemonAdversario != null && energia != null) {
+			if(energia > pokemonAdversario.get(0)) {
+				energia += (int) ((pokemonAdversario.get(0) * 0.2) - pokemonAdversario.get(0));
+				pokemonState.eliminarAdversario(nodoActual);
+				pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
+				pokemonState.setEnergia(energia);
+				pokemonState.evaluarSubirDeNivel();
+				pokemonState.incrementarContadoresAtaquesDisponibles();
+				
+				return pokemonState;
+			}
 		}
-		
 		return null;
 	}
 
 	@Override
 	public Double getCost() {
 		// TODO Auto-generated method stub
-		return null;
+		return 1.0;
 	}
 	
 	@Override

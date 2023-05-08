@@ -24,21 +24,23 @@ public class PelearConAtaqueEspecial extends SearchAction {
 		Map<String, Integer> ataquesDisponibles = pokemonState.getAtaquesDisponibles();
 		Integer energiaTemporal;
 		
-		if(energia != null && energia < pokemonAdversario.get(0) && ataquesDisponibles.size() > 0) {
-			for (int i = 0 ; i<ataquesDisponibles.size() ; i++) {
-				if(ataquesDisponibles.get("Ataque " + (i+1)) >= 3){
-					
-					energiaTemporal =(int) energia + energia * (pokemonState.getMapAtaquesEspeciales().get("Ataque " + (i+1)).get(1))/100;
-					if(energiaTemporal > pokemonAdversario.get(0)) {
-						pokemonState.eliminarAdversario(nodoActual);
-						pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
-						energia = (int)(energiaTemporal + pokemonAdversario.get(0) * 0.2 - pokemonAdversario.get(0));
-						pokemonState.setEnergia(energia);
-						pokemonState.evaluarSubirDeNivel();
-						pokemonState.incrementarContadoresAtaquesDisponibles();
-						pokemonState.actualizarContadorAtaquesDisponibles("Ataque " + (i+1), 0);
+		if(pokemonAdversario != null && energia != null) {
+			if(energia < pokemonAdversario.get(0) && ataquesDisponibles.size() > 0) {
+				for (int i = 0 ; i<ataquesDisponibles.size() ; i++) {
+					if(ataquesDisponibles.get("Ataque " + (i+1)) >= 3){
 						
-						return pokemonState;
+						energiaTemporal =(int) energia + energia * (pokemonState.getMapAtaquesEspeciales().get("Ataque " + (i+1)).get(1))/100;
+						if(energiaTemporal > pokemonAdversario.get(0)) {
+							pokemonState.eliminarAdversario(nodoActual);
+							pokemonState.setCantidadAdversarios(pokemonState.getCantidadAdversarios()-1);
+							energia = (int)(energiaTemporal + pokemonAdversario.get(0) * 0.2 - pokemonAdversario.get(0));
+							pokemonState.setEnergia(energia);
+							pokemonState.evaluarSubirDeNivel();
+							pokemonState.incrementarContadoresAtaquesDisponibles();
+							pokemonState.actualizarContadorAtaquesDisponibles("Ataque " + (i+1), 0);
+							
+							return pokemonState;
+						}
 					}
 				}
 			}
@@ -49,7 +51,7 @@ public class PelearConAtaqueEspecial extends SearchAction {
 	@Override
 	public Double getCost() {
 		// TODO Auto-generated method stub
-		return null;
+		return 1.0;
 	}
 
 	@Override

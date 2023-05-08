@@ -18,7 +18,7 @@ public class PokemonUniteAgentState extends SearchBasedAgentState{
 
 	
 	private Map<Integer, List<Integer>> ambienteAgente; // Map que tiene la lista de nodos y sus adyacencias 
-	private Map<Integer, Integer> percepcionesAmbiente = new HashMap();
+	private Map<Integer, Integer> percepcionesAmbiente;
 	private Map<Integer, List<Integer>> pokemonsAdversarios;//Lista de que contiene posicion, energia y ciclos sin moverse de los enemigos
 	private Map<Integer, Integer> pokebolas;  //Map que contiene posicion y energia de las pokebolas  
 	private Integer nodoPosicion;
@@ -42,7 +42,7 @@ public class PokemonUniteAgentState extends SearchBasedAgentState{
 		this.energia = energia;
 		this.nivel = nivel;
 		this.ataquesDisponibles = ataquesDisponibles;
-		
+		cantidadAdversarios = 5; // ver como obtener del ambiente
 		mapAtaquesEspeciales = new HashMap<String, List<Integer>>();
 		
 		mapAtaquesEspeciales.put("Ataque 1", Arrays.asList(2, 20));
@@ -55,6 +55,8 @@ public class PokemonUniteAgentState extends SearchBasedAgentState{
 		ambienteAgente = new HashMap<>();
 		pokemonsAdversarios = new HashMap<>();
 		ataquesDisponibles = new HashMap<>();
+		percepcionesAmbiente = new HashMap();
+		pokebolas  = new HashMap();
 		nodoPosicion = 1;
 		energia = 20;
 		nivel = 1;
@@ -64,7 +66,8 @@ public class PokemonUniteAgentState extends SearchBasedAgentState{
 	
 	@Override
 	public void initState() {
-		for(int i=1; i<=29; i++) {
+		percepcionesAmbiente.put(1, PokemonUnitePerception.EMPTY_PERCEPTION);
+		for(int i=2; i<=29; i++) {
 			percepcionesAmbiente.put(i, PokemonUnitePerception.UNKNOWN_PERCEPTION);
 		}
 	}
@@ -75,13 +78,32 @@ public class PokemonUniteAgentState extends SearchBasedAgentState{
 		
 		int posicion = this.nodoPosicion;
 		List<List<Integer>> infoAdyacentes =  pokemonPerception.getNodosAdyacentes(); //lista con percepcion, nodo, energia(opcional)
+		System.out.println("POKEMON UNITED AGENT STATE | NODOS ADYACENTES: " + infoAdyacentes);
 		
 		List<Integer> nodosAdyacentes = new ArrayList<>(); //nodo
 		infoAdyacentes.forEach(i -> {
 			nodosAdyacentes.add(i.get(1));
 			percepcionesAmbiente.replace(i.get(1), i.get(0));
+			
+			//ver id enemigo cuando se mueven
+			if (i.get(0) == PokemonUnitePerception.ENEMIGO_PERCEPTION) {
+				this.pokemonsAdversarios.put(i.get(1),List.of(i.get(2)));
+			} else if(i.get(0) == PokemonUnitePerception.POKEMON_MAESTRO_PERCEPTION) {
+				this.pokemonMaestro = List.of(i.get(1),i.get(2));
+			}else if(i.get(0) == PokemonUnitePerception.POKEBOLA_PERCEPTION) {
+				this.pokebolas.put(i.get(1),i.get(2));
+			}else if(i.get(0) == PokemonUnitePerception.EMPTY_PERCEPTION) {
+				if(pokemonsAdversarios.containsKey(i.get(1))) {
+					pokemonsAdversarios.remove(i.get(1));
+				} else if(pokebolas.containsKey(i.get(1))) {
+					pokebolas.remove(i.get(1));
+				}
+			}
 		});
-		this.ambienteAgente.replace(posicion, nodosAdyacentes);
+		
+		System.out.println("POKEMON UNITED AGENT STATE | NODOS ADYACENTES: " + percepcionesAmbiente);
+		this.ambienteAgente.put(posicion, nodosAdyacentes);
+		System.out.println("AMBIENTE AGENTE: "+ ambienteAgente);
 	}
 	
 	@Override
@@ -118,8 +140,14 @@ public class PokemonUniteAgentState extends SearchBasedAgentState{
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub 
-		return null;
+		return  "\n" + "\n" + "-------------------------------------------ESTADO AGENTE:" + "\n" + 
+				ambienteAgente.toString() + "\n" + "Pokemon agente(pos, energia, nivel): [" + nodoPosicion+", " + energia+", " + nivel+"]"
+				+ "\n" 	+ "Cantidad adversarios: " + cantidadAdversarios
+				+ "\n" 	+ "Pokemons adversarios(pos, energia, ciclos): " + pokemonsAdversarios
+				+ "\n" 	+ "Pokemon Maestro(pos, energia): " + pokemonMaestro
+				+ "\n" 	+ "Pokebolas(pos, energia): " + pokebolas
+				+ "\n" 	+ "Nodo percepcion: " + percepcionesAmbiente
+				+ "\n" 	+ "Ataques disponibles(nombre, ciclos): " + ataquesDisponibles;
 	}
 
 

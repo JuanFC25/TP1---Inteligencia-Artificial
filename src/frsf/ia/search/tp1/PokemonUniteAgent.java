@@ -9,8 +9,11 @@ import frsf.cidisi.faia.agent.Perception;
 import frsf.cidisi.faia.agent.search.Problem;
 import frsf.cidisi.faia.agent.search.SearchAction;
 import frsf.cidisi.faia.agent.search.SearchBasedAgent;
+import frsf.cidisi.faia.solver.search.BreathFirstSearch;
 import frsf.cidisi.faia.solver.search.DepthFirstSearch;
+import frsf.cidisi.faia.solver.search.IStepCostFunction;
 import frsf.cidisi.faia.solver.search.Search;
+import frsf.cidisi.faia.solver.search.UniformCostSearch;
 import frsf.ia.search.tp1.actions.IrAN;
 import frsf.ia.search.tp1.actions.NoPelear;
 import frsf.ia.search.tp1.actions.Pelear;
@@ -30,10 +33,10 @@ public class PokemonUniteAgent extends SearchBasedAgent {
 		
 		//operadores
 		Vector<SearchAction> operators = new Vector<SearchAction>();
-		operators.addElement(new Pelear());
-		operators.addElement(new NoPelear());
-		operators.addElement(new PelearConAtaqueEspecial());
-		operators.addElement(new RecogerEnergiaPokebola());
+		//operators.addElement(new Pelear());
+		//operators.addElement(new NoPelear());
+		//operators.addElement(new PelearConAtaqueEspecial());
+		//operators.addElement(new RecogerEnergiaPokebola());
 		for(int i=1; i<=29; i++) {
 			operators.addElement(new IrAN(i));
 		}
@@ -51,8 +54,10 @@ public class PokemonUniteAgent extends SearchBasedAgent {
 	public Action selectAction() {
 
         // Create the search strategy
-        DepthFirstSearch strategy = new DepthFirstSearch();
+        //DepthFirstSearch strategy = new DepthFirstSearch();
+		BreathFirstSearch strategy = new BreathFirstSearch();
 
+        
         /**
          * Another search strategy examples:
          * 

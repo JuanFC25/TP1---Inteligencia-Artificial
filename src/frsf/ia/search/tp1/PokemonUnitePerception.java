@@ -16,25 +16,28 @@ public class PokemonUnitePerception extends Perception {
     public static int POKEMON_MAESTRO_PERCEPTION = 2;
     public static int POKEBOLA_PERCEPTION = 3;
     public static int SATELITE_PERCEPTION = 4;
-	
+    
+    PokemonUniteEnvironment pokemonEnvironment = new PokemonUniteEnvironment();
     private List<List<Integer>> nodosAdyacentes;
     private Map<Integer, List<Integer>> mapAdyacencias;
     private Integer energy;  //preguntar
 	
-    public PokemonUnitePerception() {}
+    public PokemonUnitePerception() {energy = 20;}
 	
 	public PokemonUnitePerception(Agent agent, Environment environment) {
         super(agent, environment);
+        System.out.println("INIT PERCEPTION: ESTOY ACA 2" );
 	}
 	
 	@Override
 	public void initPerception(Agent agent, Environment environment) {
 		// TODO Auto-generated method stub
 		PokemonUniteAgent pokemonAgent = (PokemonUniteAgent) agent;
-		PokemonUniteEnvironment pokemonEnvironment = (PokemonUniteEnvironment) environment;
+		pokemonEnvironment = (PokemonUniteEnvironment) environment;
 		PokemonUniteEnvironmentState pokemonEnvironmentState = pokemonEnvironment.getEnvironmentState();
 		
 		this.setNodosAdyacentes(pokemonEnvironment.getAdyacencias());
+		System.out.println("INIT PERCEPTION: ESTOY ACA" );
 		//VER QUE PONER ACA
 		this.setMapAdyacencias(new HashMap<Integer, List<Integer>>());
 		
@@ -56,5 +59,10 @@ public class PokemonUnitePerception extends Perception {
 	public void setMapAdyacencias(Map<Integer, List<Integer>> mapAdyacencias) {
 		this.mapAdyacencias = mapAdyacencias;
 	}
+	
+	 @Override
+	    public String toString() {
+	        return "NODOS ADYACENTES(Percepcion, nodo)" + nodosAdyacentes;
+	    }
 
 }

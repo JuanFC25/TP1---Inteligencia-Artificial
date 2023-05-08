@@ -1,6 +1,7 @@
 package frsf.ia.search.tp1.actions;
 
 import java.util.List;
+import java.util.Map;
 
 import frsf.cidisi.faia.agent.search.SearchAction;
 import frsf.cidisi.faia.agent.search.SearchBasedAgentState;
@@ -20,11 +21,11 @@ public class RecogerEnergiaPokebola extends SearchAction {
 		PokemonUniteAgentState pokemonState = (PokemonUniteAgentState) s;
 		
 		Integer nodoActual = pokemonState.getNodoPosicion();
-		Integer energiaPokebola = pokemonState.getPokebolas().get(nodoActual);
+		Map<Integer, Integer> pokebolas = pokemonState.getPokebolas();
 		
 		//este if sirve para saber si hay una pokebola en el nodo actual, si es null no hay pokebola
-		if (energiaPokebola != null) {
-			Integer energiaTotal = pokemonState.getEnergia()+energiaPokebola;
+		if ( pokebolas != null && pokebolas.get(nodoActual) != null ) {
+			Integer energiaTotal = pokemonState.getEnergia()+pokebolas.get(nodoActual);
 			pokemonState.setEnergia(energiaTotal);
 			pokemonState.eliminarPokebola(nodoActual);
 			pokemonState.evaluarSubirDeNivel();
@@ -39,7 +40,7 @@ public class RecogerEnergiaPokebola extends SearchAction {
 	@Override
 	public Double getCost() {
 		// TODO Auto-generated method stub
-		return null;
+		return 1.0;
 	}
 
 	@Override
